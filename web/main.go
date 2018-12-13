@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"monitor/util/zjlog"
 	"net/http"
 	"time"
-	"util/zjlog"
 )
 
 func Index(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

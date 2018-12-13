@@ -1,6 +1,6 @@
 package main
 
-import "util/zjlog"
+import "monitor/util/zjlog"
 
 type ApiBody struct {
 	Url     string `json:"url"`

@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"monitor/util/config"
 	"net/http"
 	"net/url"
-	"util/config"
 )
 
 var httpClient *http.Client
