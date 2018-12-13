@@ -1,9 +1,11 @@
-package web
+package main
 
 import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"time"
+	"util/zjlog"
 )
 
 func Index(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -17,9 +19,22 @@ func RegisterHandlers() *httprouter.Router {
 	return router
 }
 
+func hello() {
+	log.Info("teat")
+}
+
 func main() {
-	fmt.Println("Start monitor...")
-	fmt.Println("Open http://127.0.0.1:20001")
+	logfile := "log/log_" + time.Now().Format("2006-01-02") + ".txt"
+	var err error
+	log, err = zjlog.NewLogger("DEBUG", true, logfile)
+	if err != nil {
+		panic(err)
+	}
+	defer log.Sync()
+	log.Info("Start monitor...")
+	log.Info("Open http://127.0.0.1:20001")
+	log.Info("Logger")
 	handles := RegisterHandlers()
+	hello()
 	http.ListenAndServe(":20001", handles)
 }

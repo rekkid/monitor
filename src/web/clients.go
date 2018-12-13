@@ -1,11 +1,10 @@
-package web
+package main
 
 import (
 	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"util/config"
@@ -29,7 +28,7 @@ func request(body *ApiBody, w http.ResponseWriter, r *http.Request) {
 		req.Header = r.Header
 		response, err := httpClient.Do(req)
 		if err != nil {
-			log.Printf("httpClient error: %v", err)
+			log.Errorf("httpClient error: %v", err)
 			return
 		}
 		normalResponse(w, response)
@@ -39,7 +38,7 @@ func request(body *ApiBody, w http.ResponseWriter, r *http.Request) {
 		req.Header = r.Header
 		response, err := httpClient.Do(req)
 		if err != nil {
-			log.Printf("httpclient error: %v", err)
+			log.Errorf("httpclient error: %v", err)
 			return
 		}
 		normalResponse(w, response)

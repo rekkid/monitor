@@ -1,4 +1,6 @@
-package web
+package main
+
+import "util/zjlog"
 
 type ApiBody struct {
 	Url     string `json:"url"`
@@ -16,3 +18,5 @@ var (
 	ErrRequestBodyParseFailed = Err{Error: "request body is not correct", ErrorCode: "002"}
 	ErrInternalFults          = Err{Error: "internal service error", ErrorCode: "003"}
 )
+
+var log *zjlog.Log
