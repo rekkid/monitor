@@ -13,3 +13,8 @@
 
 .idea
 .git
+*.log
+bin/
+pkg/
+log/
+
