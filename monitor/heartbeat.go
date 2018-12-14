@@ -1,7 +1,6 @@
 package monitor
 
 import (
-	"github.com/log"
 	"monitor/util/config"
 	"net/http"
 	"time"

@@ -1,7 +1,6 @@
 package zjlog
 
 import (
-	"github.com/log"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"testing"
@@ -60,41 +59,3 @@ func BenchmarkLog_levelInfo_Debug2(b *testing.B) {
 		log.GetLogger().Debug("This is debug", zap.String("name", "ZJ"))
 	}
 }
-
-<<<<<<< HEAD
-func Benchmark_OldLog_Debug(b *testing.B) {
-	log.LogPath = "log/old_log"
-	log.SetLogLevel("debug")
-	go log.RunLogFileThread()
-	for i := 0; i < b.N; i++ {
-		log.Debug("This is debug", "ZJ")
-	}
-}
-
-func Benchmark_OldLog_Info_Debug(b *testing.B) {
-	log.LogPath = "log/old_log"
-	log.SetLogLevel("info")
-	go log.RunLogFileThread()
-	for i := 0; i < b.N; i++ {
-		log.Debug("This is debug", "ZJ")
-	}
-}
-=======
-func BenchmarkOldLog(b *testing.B)  {
-	log.LogPath = "log/log_test5.log"
-	go log.RunLogFileThread()
-	log.SetLogLevel("debug")
-	for i := 0; i < b.N; i++ {
-		log.Debug("This is logger debug", zap.String("name", "ZJ"))
-	}
-}
-
-func BenchmarkOldLog_NoInfo(b *testing.B)  {
-	log.LogPath = "log/log_test5.log"
-	go log.RunLogFileThread()
-	log.SetLogLevel("info")
-	for i := 0; i < b.N; i++ {
-		log.Debug("This is logger debug", zap.String("name", "ZJ"))
-	}
-}
->>>>>>> origin/master
