@@ -7,13 +7,20 @@ import (
 )
 
 type Configuration struct {
-	WebAddr string `json:"web_addr"`
+	Host          string          `json:"host"`
+	Microservices []Microservices `json:"microservices"`
+}
+
+type Microservices struct {
+	Name string `json:"name"`
+	IP   string `json:"IP"`
+	Port string `json:"prot"`
 }
 
 var configuration *Configuration
 
 func init() {
-	file, err := os.Open("./config.json")
+	file, err := os.Open("config/config.json")
 	if err != nil {
 		log.Printf("read file error: %v", err)
 		return
@@ -27,6 +34,10 @@ func init() {
 	}
 }
 
-func GetWebAddr() string {
-	return configuration.WebAddr
+func GetMicroservices() []Microservices {
+	return configuration.Microservices
+}
+
+func GetHostAddr() string {
+	return configuration.Host
 }

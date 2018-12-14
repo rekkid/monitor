@@ -1,0 +1,29 @@
+{
+  "host": "127.0.0.1",
+  "microservices": [
+    {
+      "name": "report",
+      "IP": "127.0.0.1",
+      "port": "30001"
+    },
+    {
+      "name": "job",
+      "IP": "127.0.0.1",
+      "port": "30002"
+    }
+  ],
+  "monitor_type": [
+    {
+      "type": "heartbeat",
+      "interval": "5"
+    },
+    {
+      "type": "TCP",
+      "interval": "5"
+    },
+    {
+      "type": "load",
+      "interval": "5"
+    }
+  ]
+}

@@ -19,7 +19,7 @@ func init() {
 func request(body *ApiBody, w http.ResponseWriter, r *http.Request) {
 
 	url, _ := url.Parse(body.Url)
-	url.Host = config.GetWebAddr() + ":" + url.Port()
+	url.Host = config.GetHostAddr() + ":" + url.Port()
 	newUrl := url.String()
 
 	switch body.Method {

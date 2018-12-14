@@ -9,18 +9,13 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprint(w, "Welcome!\n")
+	fmt.Fprint(w, "Welcome to microservice monitor!\n")
 }
 
 func RegisterHandlers() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", Index)
-	router.POST("/api", apiHandler)
 	return router
-}
-
-func hello() {
-	log.Info("teat")
 }
 
 func main() {
@@ -31,9 +26,8 @@ func main() {
 		panic(err)
 	}
 	defer log.Sync()
-	log.Info("Start web...")
-	log.Info("Open http://127.0.0.1:20002")
+	log.Info("Start main...")
+	log.Info("Open http://127.0.0.1:20001")
 	handles := RegisterHandlers()
-	hello()
-	http.ListenAndServe(":20002", handles)
+	http.ListenAndServe(":20001", handles)
 }
