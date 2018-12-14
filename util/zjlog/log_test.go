@@ -61,6 +61,7 @@ func BenchmarkLog_levelInfo_Debug2(b *testing.B) {
 	}
 }
 
+<<<<<<< HEAD
 func Benchmark_OldLog_Debug(b *testing.B) {
 	log.LogPath = "log/old_log"
 	log.SetLogLevel("debug")
@@ -78,3 +79,22 @@ func Benchmark_OldLog_Info_Debug(b *testing.B) {
 		log.Debug("This is debug", "ZJ")
 	}
 }
+=======
+func BenchmarkOldLog(b *testing.B)  {
+	log.LogPath = "log/log_test5.log"
+	go log.RunLogFileThread()
+	log.SetLogLevel("debug")
+	for i := 0; i < b.N; i++ {
+		log.Debug("This is logger debug", zap.String("name", "ZJ"))
+	}
+}
+
+func BenchmarkOldLog_NoInfo(b *testing.B)  {
+	log.LogPath = "log/log_test5.log"
+	go log.RunLogFileThread()
+	log.SetLogLevel("info")
+	for i := 0; i < b.N; i++ {
+		log.Debug("This is logger debug", zap.String("name", "ZJ"))
+	}
+}
+>>>>>>> origin/master
