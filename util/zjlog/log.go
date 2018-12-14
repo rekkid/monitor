@@ -51,12 +51,13 @@ func NewLogger(level string, isDebug bool, file string) (*Log, error) {
 
 	currLevel := zap.NewAtomicLevelAt(zapLevel)
 
+	filename := file + "_log_" + time.Now().Format("2006-01-02") + ".log"
 	customCfg := zap.Config{
 		Level:            currLevel,
 		Development:      true,
 		Encoding:         "console",
 		EncoderConfig:    encoderCfg,
-		OutputPaths:      []string{"stdout", file},
+		OutputPaths:      []string{"stdout", filename},
 		ErrorOutputPaths: []string{"stderr"},
 		DisableCaller:    false,
 	}

@@ -1,6 +1,7 @@
 package zjlog
 
 import (
+	"github.com/log"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"testing"
@@ -24,7 +25,7 @@ func TestLog_Debug(t *testing.T) {
 }
 
 func TestLog_GetLogLevel(t *testing.T) {
-	log, err := NewLogger("ERROR", true, "log/log_test3.log")
+	log, err := NewLogger("ERROR", true, "log/log_test3")
 	if err != nil {
 		panic(err)
 	}
@@ -57,5 +58,23 @@ func BenchmarkLog_levelInfo_Debug2(b *testing.B) {
 	log, _ := NewLogger("Info", true, "log/log_test2.log")
 	for i := 0; i < b.N; i++ {
 		log.GetLogger().Debug("This is debug", zap.String("name", "ZJ"))
+	}
+}
+
+func Benchmark_OldLog_Debug(b *testing.B) {
+	log.LogPath = "log/old_log"
+	log.SetLogLevel("debug")
+	go log.RunLogFileThread()
+	for i := 0; i < b.N; i++ {
+		log.Debug("This is debug", "ZJ")
+	}
+}
+
+func Benchmark_OldLog_Info_Debug(b *testing.B) {
+	log.LogPath = "log/old_log"
+	log.SetLogLevel("info")
+	go log.RunLogFileThread()
+	for i := 0; i < b.N; i++ {
+		log.Debug("This is debug", "ZJ")
 	}
 }
