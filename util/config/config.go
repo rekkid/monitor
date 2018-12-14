@@ -7,14 +7,26 @@ import (
 )
 
 type Configuration struct {
-	Host          string          `json:"host"`
-	Microservices []Microservices `json:"microservices"`
+	Services []Service `json:"services"`
+	Host     string    `json:"host"`
 }
 
-type Microservices struct {
-	Name string `json:"name"`
-	IP   string `json:"IP"`
-	Port string `json:"prot"`
+type ServicesJson struct {
+	Services []Service `json:"service"`
+}
+
+type Service struct {
+	Id    string `json:"id"`
+	Name  string `json:"name"`
+	IP    string `json:"IP"`
+	Port  string `json:"port"`
+	Check Check  `json:"check"`
+}
+
+type Check struct {
+	Type     string `json:"type"`
+	Interval string `json:"interval"`
+	Timeout  string `json:"timeout"`
 }
 
 var configuration *Configuration
@@ -34,8 +46,8 @@ func init() {
 	}
 }
 
-func GetMicroservices() []Microservices {
-	return configuration.Microservices
+func GetMicroservices() []Service {
+	return configuration.Services
 }
 
 func GetHostAddr() string {

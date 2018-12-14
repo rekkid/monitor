@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"monitor/monitor"
 	"monitor/util/zjlog"
 	"net/http"
 	"time"
@@ -29,5 +30,7 @@ func main() {
 	log.Info("Start main...")
 	log.Info("Open http://127.0.0.1:20001")
 	handles := RegisterHandlers()
+	monitor := monitor.NewMonitor()
+	monitor.Start()
 	http.ListenAndServe(":20001", handles)
 }
