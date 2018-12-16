@@ -1,16 +1,20 @@
-package monitor
+package main
 
-import "monitor/util/config"
+import (
+	"monitor/util/config"
+)
 
 var monitor *Monitor
 
 type Monitor struct {
+	microservices []config.Service
+	host          string
 }
 
 func NewMonitor() *Monitor {
 	microservices := config.GetMicroservices()
-	monitorTypes := config.GetHostAddr()
-	return &Monitor{}
+	host := config.GetHostAddr()
+	return &Monitor{microservices: microservices, host: host}
 }
 
 func MonitorService(microservice *config.Microservice, monitorType *config.MonitorType) {
