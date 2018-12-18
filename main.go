@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/julienschmidt/httprouter"
-	"monitor/monitor"
 	"monitor/util/zjlog"
 	"net/http"
 	"time"
@@ -19,6 +19,8 @@ func RegisterHandlers() *httprouter.Router {
 	return router
 }
 
+var log *zjlog.Log
+
 func main() {
 	logfile := "log/log_" + time.Now().Format("2006-01-02") + ".txt"
 	var err error
@@ -29,8 +31,15 @@ func main() {
 	defer log.Sync()
 	log.Info("Start main...")
 	log.Info("Open http://127.0.0.1:20001")
-	handles := RegisterHandlers()
-	monitor := monitor.NewMonitor()
+	_ = RegisterHandlers()
+	monitor := NewMonitor()
 	monitor.Start()
-	http.ListenAndServe(":20001", handles)
+	//http.ListenAndServe(":20001", handles)
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+	r.Run() // listen and serve on 0.0.0.0:8080
 }

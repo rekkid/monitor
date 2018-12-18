@@ -4,7 +4,7 @@ import (
 	"monitor/util/config"
 )
 
-var monitor *Monitor
+//var monitor *Monitor
 
 type Monitor struct {
 	microservices []config.Service
@@ -17,17 +17,21 @@ func NewMonitor() *Monitor {
 	return &Monitor{microservices: microservices, host: host}
 }
 
-func MonitorService(microservice *config.Microservice, monitorType *config.MonitorType) {
+func MonitorService(microservice *config.Service, monitorType string) {
 	if monitorType == "heartbeat" {
 		HeartBeatMonitor()
 	}
 }
 
+func HeartBeatMonitor() {
+
+}
+
 func (m *Monitor) Start() {
 
-	for microservice := range microservices {
-		for monitorType := range monitorTypes {
-
-		}
-	}
+	//for microservice := range microservices {
+	//	for monitorType := range monitorTypes {
+	//
+	//	}
+	//}
 }
