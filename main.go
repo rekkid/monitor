@@ -19,6 +19,10 @@ func RegisterHandlers() *httprouter.Router {
 	return router
 }
 
+func Handler(c *gin.Context) {
+
+}
+
 var log *zjlog.Log
 
 func main() {
@@ -29,17 +33,16 @@ func main() {
 		panic(err)
 	}
 	defer log.Sync()
-	log.Info("Start main...")
-	log.Info("Open http://127.0.0.1:20001")
-	_ = RegisterHandlers()
+
 	monitor := NewMonitor()
 	monitor.Start()
-	//http.ListenAndServe(":20001", handles)
+
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run(":20001")
+
 }
