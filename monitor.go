@@ -1,5 +1,9 @@
 package main
 
+import (
+	"net/http"
+)
+
 type ServicesJson struct {
 	Services []Service `json:"service"`
 	Host     string    `json:"host"`
@@ -32,6 +36,13 @@ func NewMonitor() *Monitor {
 
 func (s *Service) httpHeartbeat() {
 	log.Info("service http heartbeat")
+	url := "http://" + s.IP + ":" + s.Port
+	resp, err := http.DefaultClient.Get(url)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	log.Info(resp.Body)
 }
 
 func (s *Service) tcpHeartbeat() {
