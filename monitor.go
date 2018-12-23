@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 )
 
 type ServicesJson struct {
@@ -35,6 +36,11 @@ func NewMonitor() *Monitor {
 }
 
 func (s *Service) httpHeartbeat() {
+
+	timer = time.Tick(s.Check.Interval)
+	for {
+
+	}
 	log.Info("service http heartbeat")
 	url := "http://" + s.IP + ":" + s.Port
 	resp, err := http.DefaultClient.Get(url)
