@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"monitor/util/config"
 	"net/http"
 	"net/url"
 )
@@ -19,7 +18,7 @@ func init() {
 func request(body *ApiBody, w http.ResponseWriter, r *http.Request) {
 
 	url, _ := url.Parse(body.Url)
-	url.Host = config.GetHostAddr() + ":" + url.Port()
+	url.Host = "http://127.0.0.1" + ":" + url.Port()
 	newUrl := url.String()
 
 	switch body.Method {

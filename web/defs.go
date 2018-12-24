@@ -1,11 +1,15 @@
 package main
 
-import "monitor/util/zjlog"
+import "github.com/rekkid/monitor/util/zjlog"
 
 type ApiBody struct {
 	Url     string `json:"url"`
 	Method  string `json:"method"`
 	ReqBody string `json:"req_body"`
+}
+
+func NewApiBody(url string, method string, reqBody string) *ApiBody {
+	return &ApiBody{Url: url, Method: method, ReqBody: reqBody}
 }
 
 type Err struct {
