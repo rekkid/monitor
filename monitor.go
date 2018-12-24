@@ -1,8 +1,10 @@
 package main
 
 import (
+	"io/ioutil"
 	"net/http"
 	"time"
+	"unsafe"
 )
 
 type ServicesJson struct {
@@ -36,19 +38,43 @@ func NewMonitor() *Monitor {
 }
 
 func (s *Service) httpHeartbeat() {
-
-	timer = time.Tick(s.Check.Interval)
-	for {
-
-	}
 	log.Info("service http heartbeat")
-	url := "http://" + s.IP + ":" + s.Port
-	resp, err := http.DefaultClient.Get(url)
+	log.Info(s.Check.Interval)
+	//var num int
+	//var unit string
+	//fmt.Sscanf(s.Check.Interval, "%d%s", &num, &unit)
+	//log.Info(num, ":", unit)
+
+	interval, err := time.ParseDuration(s.Check.Interval)
 	if err != nil {
 		log.Error(err)
 		return
 	}
-	log.Info(resp.Body)
+
+	ticker := time.NewTicker(interval)
+
+	url := "http://" + s.IP + ":" + s.Port + "/healthcheck"
+	for {
+		select {
+		case <-ticker.C:
+			log.Info("Send heartbeat request to service: ", s.Id)
+			resp, err := http.DefaultClient.Get(url)
+			if err != nil {
+				log.Error(err)
+				return
+			}
+			defer resp.Body.Close()
+
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Error(err)
+				return
+			}
+			str := *(*string)(unsafe.Pointer(&body))
+			log.Info("Receive from: ", s.Id, ", name: ", s.Name, ", Info: ", str)
+		}
+	}
+
 }
 
 func (s *Service) tcpHeartbeat() {
@@ -57,10 +83,13 @@ func (s *Service) tcpHeartbeat() {
 
 func (m *Monitor) Start() {
 	for _, service := range m.microservices {
-		if service.Check.Type == "http_heartbeat" {
-			service.httpHeartbeat()
-		} else if service.Check.Type == "tcp_heartbeat" {
-			service.tcpHeartbeat()
-		}
+		go func(service Service) {
+			if service.Check.Type == "http_heartbeat" {
+				service.httpHeartbeat()
+			} else if service.Check.Type == "tcp_heartbeat" {
+				service.tcpHeartbeat()
+			}
+		}(service)
+
 	}
 }

@@ -8,7 +8,7 @@
       "port": "30001",
       "check": {
         "type": "http_heartbeat",
-        "interval": "10",
+        "interval": "4s",
         "timeout": "1"
       }
     },
@@ -18,8 +18,8 @@
       "IP": "127.0.0.1",
       "port": "30002",
       "check": {
-        "type": "tcp_heartbeat",
-        "interval": "5",
+        "type": "http_heartbeat",
+        "interval": "1s",
         "timeout": "1"
       }
     }
