@@ -26,7 +26,7 @@ func ShowServiceStatus(m *Monitor, c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func c(m *Monitor) func(c *gin.Context) {
+func closure(m *Monitor) func(c *gin.Context) {
 	f := func(c *gin.Context) {
 		ShowServiceStatus(m, c)
 	}
@@ -36,7 +36,7 @@ func c(m *Monitor) func(c *gin.Context) {
 func Mon(m *Monitor) http.Handler {
 	e := gin.New()
 	e.Use(gin.Recovery())
-	e.GET("/monitor", c(m))
+	e.GET("/monitor", closure(m))
 	return e
 }
 
