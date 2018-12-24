@@ -26,7 +26,7 @@ func hello() {
 func main() {
 	logfile := "log/log_" + time.Now().Format("2006-01-02") + ".txt"
 	var err error
-	log, err = util.NewLogger("DEBUG", true, logfile)
+	log, err = zjlog.NewLogger("DEBUG", true, logfile)
 	if err != nil {
 		panic(err)
 	}

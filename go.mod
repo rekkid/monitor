@@ -7,6 +7,7 @@ require (
 	github.com/json-iterator/go v1.1.5
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/mattn/go-isatty v0.0.4
+	github.com/rekkid/monitor/util v0.0.0-20181224082825-36d7d5310bbc
 	github.com/ugorji/go v1.1.1
 	go.uber.org/atomic v1.3.2
 	go.uber.org/multierr v1.1.0

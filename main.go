@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/julienschmidt/httprouter"
-	"monitor/util/zjlog"
+	"github.com/rekkid/monitor/util/zjlog"
 	"net/http"
 	"time"
 )
