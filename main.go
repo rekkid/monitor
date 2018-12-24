@@ -1,29 +1,45 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/julienschmidt/httprouter"
 	"github.com/rekkid/monitor/util/zjlog"
+	"golang.org/x/sync/errgroup"
 	"net/http"
 	"time"
 )
 
-func Index(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprint(w, "Welcome to microservice monitor!\n")
+var (
+	log     *zjlog.Log
+	monitor *Monitor
+	g       errgroup.Group
+)
+
+func ShowServiceStatus(c *gin.Context) {
+	result := make([]gin.H, len(monitor.microservices))
+	for i, service := range monitor.microservices {
+		result[i] = gin.H{
+			"host":   monitor.host,
+			"name":   service.Name,
+			"status": service.status,
+		}
+	}
+	log.Info("testfakfjsakfjksajfksaj")
+	c.JSON(http.StatusOK, result)
 }
 
-func RegisterHandlers() *httprouter.Router {
-	router := httprouter.New()
-	router.GET("/", Index)
-	return router
+func c(m *Monitor) {
+	f := func(m *Monitor) {
+
+	}
+	return f
 }
 
-func Handler(c *gin.Context) {
-
+func Mon(m *Monitor) http.Handler {
+	e := gin.New()
+	e.Use(gin.Recovery())
+	e.GET("/monitor", ShowServiceStatus)
+	return e
 }
-
-var log *zjlog.Log
 
 func main() {
 	logfile := "log/log_" + time.Now().Format("2006-01-02") + ".txt"
@@ -34,15 +50,33 @@ func main() {
 	}
 	defer log.Sync()
 
-	monitor := NewMonitor()
+	monitor = NewMonitor()
 	monitor.Start()
 
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+	server1 := &http.Server{
+		Addr:         ":20001",
+		Handler:      Mon(monitor),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	server2 := &http.Server{
+		Addr:         ":20002",
+		Handler:      RunCmd(),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	g.Go(func() error {
+		return server1.ListenAndServe()
 	})
-	r.Run(":20001")
+
+	g.Go(func() error {
+		return server2.ListenAndServe()
+	})
+
+	if err := g.Wait(); err != nil {
+		log.Fatal(err)
+	}
 
 }

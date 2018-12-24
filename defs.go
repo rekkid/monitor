@@ -1,3 +1,6 @@
 package main
 
-//import "monitor/util/zjlog"
+const (
+	HEALTHY   = "ok"
+	UNHEALTHY = "bad"
+)

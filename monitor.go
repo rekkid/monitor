@@ -13,11 +13,12 @@ type ServicesJson struct {
 }
 
 type Service struct {
-	Id    string `json:"id"`
-	Name  string `json:"name"`
-	IP    string `json:"IP"`
-	Port  string `json:"port"`
-	Check Check  `json:"check"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	IP     string `json:"IP"`
+	Port   string `json:"port"`
+	Check  Check  `json:"check"`
+	status string
 }
 
 type Check struct {
@@ -40,11 +41,6 @@ func NewMonitor() *Monitor {
 func (s *Service) httpHeartbeat() {
 	log.Info("service http heartbeat")
 	log.Info(s.Check.Interval)
-	//var num int
-	//var unit string
-	//fmt.Sscanf(s.Check.Interval, "%d%s", &num, &unit)
-	//log.Info(num, ":", unit)
-
 	interval, err := time.ParseDuration(s.Check.Interval)
 	if err != nil {
 		log.Error(err)
@@ -52,24 +48,37 @@ func (s *Service) httpHeartbeat() {
 	}
 
 	ticker := time.NewTicker(interval)
-
 	url := "http://" + s.IP + ":" + s.Port + "/healthcheck"
 	for {
 		select {
 		case <-ticker.C:
 			log.Info("Send heartbeat request to service: ", s.Id)
-			resp, err := http.DefaultClient.Get(url)
+			timeout, err := time.ParseDuration(s.Check.Timeout)
 			if err != nil {
 				log.Error(err)
 				return
+			}
+
+			tr := &http.Transport{
+				ResponseHeaderTimeout: timeout,
+			}
+			client := &http.Client{Transport: tr, Timeout: timeout}
+
+			resp, err := client.Get(url)
+			if err != nil {
+				log.Error(err)
+				s.status = UNHEALTHY
+				continue
 			}
 			defer resp.Body.Close()
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				log.Error(err)
-				return
+				s.status = UNHEALTHY
+				continue
 			}
+			s.status = HEALTHY
 			str := *(*string)(unsafe.Pointer(&body))
 			log.Info("Receive from: ", s.Id, ", name: ", s.Name, ", Info: ", str)
 		}
@@ -82,14 +91,14 @@ func (s *Service) tcpHeartbeat() {
 }
 
 func (m *Monitor) Start() {
-	for _, service := range m.microservices {
-		go func(service Service) {
+	services := m.microservices
+	for i, _ := range m.microservices {
+		go func(service *Service) {
 			if service.Check.Type == "http_heartbeat" {
 				service.httpHeartbeat()
 			} else if service.Check.Type == "tcp_heartbeat" {
 				service.tcpHeartbeat()
 			}
-		}(service)
-
+		}(&services[i])
 	}
 }
