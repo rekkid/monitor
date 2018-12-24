@@ -9,16 +9,15 @@ import (
 )
 
 var (
-	log     *zjlog.Log
-	monitor *Monitor
-	g       errgroup.Group
+	log *zjlog.Log
+	g   errgroup.Group
 )
 
-func ShowServiceStatus(c *gin.Context) {
-	result := make([]gin.H, len(monitor.microservices))
-	for i, service := range monitor.microservices {
+func ShowServiceStatus(m *Monitor, c *gin.Context) {
+	result := make([]gin.H, len(m.microservices))
+	for i, service := range m.microservices {
 		result[i] = gin.H{
-			"host":   monitor.host,
+			"host":   m.host,
 			"name":   service.Name,
 			"status": service.status,
 		}
@@ -27,9 +26,9 @@ func ShowServiceStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func c(m *Monitor) {
-	f := func(m *Monitor) {
-
+func c(m *Monitor) func(c *gin.Context) {
+	f := func(c *gin.Context) {
+		ShowServiceStatus(m, c)
 	}
 	return f
 }
@@ -37,7 +36,7 @@ func c(m *Monitor) {
 func Mon(m *Monitor) http.Handler {
 	e := gin.New()
 	e.Use(gin.Recovery())
-	e.GET("/monitor", ShowServiceStatus)
+	e.GET("/monitor", c(m))
 	return e
 }
 
@@ -50,7 +49,7 @@ func main() {
 	}
 	defer log.Sync()
 
-	monitor = NewMonitor()
+	monitor := NewMonitor()
 	monitor.Start()
 
 	server1 := &http.Server{
